@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Similarix | Document Similarity Checker</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- DOCX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+
+    <!-- OCR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            <span class="logo-icon">◈</span>
+            Simila<span>rix</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#checker">Checker</a>
+            <a href="#how">How It Works</a>
+            <a href="#features">Features</a>
+        </div>
+
+        <button id="themeBtn" class="theme-btn">
+            ☾
+        </button>
+
+    </nav>
+
+
+    <!-- HERO SECTION -->
+
+    <section class="hero" id="home">
+
+        <div class="hero-badge">
+            ⚡ Fast • Secure • Smart
+        </div>
+
+        <h1>
+            Check Your Document
+            <span>Similarity</span>
+        </h1>
+
+        <p>
+            Upload two documents and instantly identify matching
+            content using Trie and Hashing algorithms.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#checker" class="primary-btn">
+                Check Documents →
+            </a>
+
+            <a href="#how" class="secondary-btn">
+                How It Works
+            </a>
+
+        </div>
+
+
+        <div class="hero-stats">
+
+            <div>
+                <strong>3</strong>
+                <span>File Formats</span>
+            </div>
+
+            <div>
+                <strong>OCR</strong>
+                <span>Scanned PDFs</span>
+            </div>
+
+            <div>
+                <strong>Fast</strong>
+                <span>Trie Search</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CHECKER SECTION -->
+
+    <section class="checker-section" id="checker">
+
+        <div class="section-title">
+
+            <span class="small-title">
+                DOCUMENT ANALYSIS
+            </span>
+
+            <h2>Compare Your Documents</h2>
+
+            <p>
+                Upload an original document and another document
+                to check their similarity.
+            </p>
+
+        </div>
+
+
+        <div class="checker-card">
+
+
+            <!-- UPLOAD BOXES -->
+
+            <div class="upload-row">
+
+
+                <!-- DOCUMENT A -->
+
+                <div class="upload-box" id="dropA">
+
+                    <div class="upload-icon">
+                        📄
+                    </div>
+
+                    <h3>Original Document</h3>
+
+                    <p>
+                        Upload your source document
+                    </p>
+
+                    <input
+                        type="file"
+                        id="fileA"
+                        accept=".txt,.pdf,.docx"
+                        hidden
+                    >
+
+                    <button
+                        class="upload-btn"
+                        onclick="document.getElementById('fileA').click()"
+                    >
+                        Choose File
+                    </button>
+
+                    <div class="filename" id="nameA">
+                        No file selected
+                    </div>
+
+                    <div class="formats">
+                        TXT &nbsp; PDF &nbsp; DOCX
+                    </div>
+
+                </div>
+
+
+                <!-- VS -->
+
+                <div class="vs">
+                    VS
+                </div>
+
+
+                <!-- DOCUMENT B -->
+
+                <div class="upload-box" id="dropB">
+
+                    <div class="upload-icon">
+                        🔍
+                    </div>
+
+                    <h3>Check Document</h3>
+
+                    <p>
+                        Upload the document to analyze
+                    </p>
+
+                    <input
+                        type="file"
+                        id="fileB"
+                        accept=".txt,.pdf,.docx"
+                        hidden
+                    >
+
+                    <button
+                        class="upload-btn"
+                        onclick="document.getElementById('fileB').click()"
+                    >
+                        Choose File
+                    </button>
+
+                    <div class="filename" id="nameB">
+                        No file selected
+                    </div>
+
+                    <div class="formats">
+                        TXT &nbsp; PDF &nbsp; DOCX
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SETTINGS -->
+
+            <div class="settings-card">
+
+                <div class="setting-item">
+
+                    <div>
+
+                        <h4>Phrase Size</h4>
+
+                        <p>
+                            Number of words compared together
+                        </p>
+
+                    </div>
+
+                    <input
+                        type="number"
+                        id="chunkSize"
+                        value="5"
+                        min="2"
+                        max="12"
+                    >
+
+                </div>
+
+
+                <div class="setting-item checkbox-item">
+
+                    <div>
+
+                        <h4>OCR Support</h4>
+
+                        <p>
+                            Use OCR for scanned PDFs
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="ocrToggle"
+                            checked
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- CHECK BUTTON -->
+
+            <button id="checkBtn" class="check-btn">
+
+                <span>🔍</span>
+                Check Similarity
+
+            </button>
+
+
+            <!-- STATUS -->
+
+            <div id="status" class="status"></div>
+
+
+            <!-- LOADER -->
+
+            <div id="loader" class="loader-container">
+
+                <div class="loader"></div>
+
+                <p>
+                    Analyzing documents...
+                </p>
+
+            </div>
+
+
+            <!-- RESULT -->
+
+            <div id="resultPanel" class="result-panel">
+
+
+                <div class="result-header">
+
+                    <span>
+                        ANALYSIS COMPLETE
+                    </span>
+
+                    <h2>
+                        Similarity Report
+                    </h2>
+
+                </div>
+
+
+                <!-- SCORE -->
+
+                <div class="score-content">
+
+
+                    <div class="circle-container">
+
+                        <div id="scoreCircle" class="score-circle">
+
+                            <div class="circle-inner">
+
+                                <strong id="scoreNumber">
+                                    0%
+                                </strong>
+
+                                <span>
+                                    Similarity
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="score-info">
+
+                        <h2 id="resultTitle">
+                            Low Similarity
+                        </h2>
+
+                        <p id="resultMessage">
+                            The documents have minimal matching content.
+                        </p>
+
+                        <div class="result-badge" id="resultBadge">
+                            LOW
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- STATS -->
+
+                <div class="result-stats">
+
+                    <div class="stat-box">
+
+                        <span class="stat-icon">
+                            📄
+                        </span>
+
+                        <strong id="wordsCount">
+                            0
+                        </strong>
+
+                        <p>
+                            Words Analyzed
+                        </p>
+
+                    </div>
+
+
+                    <div class="stat-box">
+
+                        <span class="stat-icon">
+                            🔗
+                        </span>
+
+                        <strong id="matchedCount">
+                            0
+                        </strong>
+
+                        <p>
+                            Matching Words
+                        </p>
+
+                    </div>
+
+
+                    <div class="stat-box">
+
+                        <span class="stat-icon">
+                            ⚙
+                        </span>
+
+                        <strong id="chunkDisplay">
+                            5
+                        </strong>
+
+                        <p>
+                            Phrase Size
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILES -->
+
+                <div class="analyzed-files">
+
+                    <h3>
+                        Documents Compared
+                    </h3>
+
+                    <div class="file-result">
+
+                        <span>📄</span>
+
+                        <div>
+
+                            <strong id="resultFileA">
+                                Document A
+                            </strong>
+
+                            <p>
+                                Original Document
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="file-result">
+
+                        <span>📄</span>
+
+                        <div>
+
+                            <strong id="resultFileB">
+                                Document B
+                            </strong>
+
+                            <p>
+                                Document Checked
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+
+    <section class="how-section" id="how">
+
+        <div class="section-title">
+
+            <span class="small-title">
+                PROCESS
+            </span>
+
+            <h2>How Similarix Works</h2>
+
+            <p>
+                Our system uses efficient algorithms to compare
+                your documents.
+            </p>
+
+        </div>
+
+
+        <div class="steps">
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <div class="step-icon">
+                    📤
+                </div>
+
+                <h3>
+                    Upload
+                </h3>
+
+                <p>
+                    Upload two TXT, PDF or DOCX documents.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <div class="step-icon">
+                    📖
+                </div>
+
+                <h3>
+                    Extract
+                </h3>
+
+                <p>
+                    Text is extracted using PDF, DOCX and OCR tools.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <div class="step-icon">
+                    🔐
+                </div>
+
+                <h3>
+                    Hash
+                </h3>
+
+                <p>
+                    Text phrases are converted into hash values.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    04
+                </div>
+
+                <div class="step-icon">
+                    🌳
+                </div>
+
+                <h3>
+                    Trie Search
+                </h3>
+
+                <p>
+                    Hash values are searched efficiently using Trie.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    05
+                </div>
+
+                <div class="step-icon">
+                    📊
+                </div>
+
+                <h3>
+                    Result
+                </h3>
+
+                <p>
+                    Get the document similarity percentage.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FEATURES -->
+
+    <section class="features-section" id="features">
+
+        <div class="section-title">
+
+            <span class="small-title">
+                FEATURES
+            </span>
+
+            <h2>Why Use Similarix?</h2>
+
+        </div>
+
+
+        <div class="features-grid">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    ⚡
+                </div>
+
+                <h3>
+                    Fast Comparison
+                </h3>
+
+                <p>
+                    Trie and Hashing provide efficient document matching.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    📄
+                </div>
+
+                <h3>
+                    Multiple Formats
+                </h3>
+
+                <p>
+                    Supports TXT, PDF and DOCX documents.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🔎
+                </div>
+
+                <h3>
+                    OCR Support
+                </h3>
+
+                <p>
+                    Extract text from scanned PDF documents.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    📊
+                </div>
+
+                <h3>
+                    Clear Results
+                </h3>
+
+                <p>
+                    Get an easy-to-understand similarity report.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <div class="logo">
+            <span class="logo-icon">◈</span>
+            simila<span>rix</span>
+        </div>
+
+        <p>
+            Trie + Hashing Based Document Similarity Checker
+        </p>
+
+        <small>
+            © 2026 Similarix • Academic Project
+        </small>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT FILES -->
+
+    <script src="trie.js"></script>
+    <script src="fileReaders.js"></script>
+    <script src="compare.js"></script>
+    <script src="app.js"></script>
+
+</body>
+
+</html>
